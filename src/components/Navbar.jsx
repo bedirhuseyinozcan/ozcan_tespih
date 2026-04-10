@@ -16,14 +16,19 @@ const authlinks = [
 
 export default function Navbar() {
   return (
-    <AppBar position="static" sx={{ backgroundColor: "secondary.light" }}>
+    <AppBar position="static" sx={{ backgroundColor: "primary.main" }}>
       <Toolbar>
         <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
           <IconButton color="inherit">
             <StorefrontIcon />
           </IconButton>
           {links.map((link) => (
-            <Button component={NavLink} to={link.path} color="inherit">
+            <Button
+              key={link.to}
+              component={NavLink}
+              to={link.path}
+              color="inherit"
+            >
               {link.title}
             </Button>
           ))}
@@ -41,7 +46,12 @@ export default function Navbar() {
             </Badge>
           </IconButton>
           {authlinks.map((link) => (
-            <Button component={NavLink} to={link.path} color="inherit">
+            <Button
+              key={link.to}
+              component={NavLink}
+              to={link.path}
+              color="inherit"
+            >
               {link.title}
             </Button>
           ))}
