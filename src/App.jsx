@@ -7,8 +7,11 @@ import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import AboutPage from "./pages/About";
 import ProductDetailsPage from "./pages/ProductDetails";
+import ErrorPage from "./pages/errors/Error";
+import ServerErrorPage from "./pages/errors/ServerError";
+import NotFoundPage from "./pages/errors/NotFound";
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
@@ -28,6 +31,15 @@ const router = createBrowserRouter([
       { path: "cart", element: <CartPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
+      {
+        path: "errors",
+        children: [
+          { index: true, element: <ErrorPage /> },
+          { path: "server-error", element: <ServerErrorPage /> },
+          { path: "not-found", element: <NotFoundPage /> },
+        ],
+      },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
 ]);

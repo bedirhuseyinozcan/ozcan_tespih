@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import ProductList from "../components/ProductList";
 import { useState } from "react";
 import Loading from "../components/Loading";
+import requests from "../api/apiClient";
 
 export default function ProductsPage() {
   const [loadedProducts, setloadedProducts] = useState([]);
@@ -10,8 +11,7 @@ export default function ProductsPage() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("http://localhost:5000/products");
-        const data = await response.json();
+        const data = await requests.products.list();
         console.log(data);
         setloadedProducts(data);
       } catch (error) {

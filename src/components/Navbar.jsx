@@ -7,6 +7,7 @@ const links = [
   { title: "Home", path: "/" },
   { title: "Products", path: "/products" },
   { title: "About", path: "/about" },
+  { title: "Error", path: "/errors" },
 ];
 
 const authlinks = [
@@ -16,7 +17,7 @@ const authlinks = [
 
 export default function Navbar() {
   return (
-    <AppBar position="static" sx={{ backgroundColor: "primary.main" }}>
+    <AppBar position="sticky" sx={{ backgroundColor: "primary.main" }}>
       <Toolbar>
         <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
           <IconButton color="inherit">
