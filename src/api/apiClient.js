@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { router } from "../App";
 
 axios.defaults.baseURL = "http://localhost:5000/";
+axios.defaults.withCredentials = true;
 
 axios.interceptors.response.use(
     (response)=> {console.log("sucsess");
@@ -62,11 +63,17 @@ const errors = {
     get404Error: () => methods.get("/errors/not-found").catch((error) => console.log(error)),
     get500Error: () => methods.get("/errors/server-error").catch((error) => console.log(error)),
 };
+const cart ={
+    get: () => methods.get("carts"),
+    addItem: (productId, quantity = 1) => methods.post(`carts?productId=${productId}&quantity=${quantity}`, {}),
+    removeItem: (productId, quantity = 1) => methods.delete(`carts?productId=${productId}&quantity=${quantity}`),
+}
 
 
 const requests = {
     products,
-    errors
+    errors,
+    cart
 };
 
 export default requests;

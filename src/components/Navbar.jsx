@@ -2,6 +2,7 @@ import { AppBar, Badge, Box, Button, IconButton, Toolbar } from "@mui/material";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import { NavLink } from "react-router";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useCartContext } from "../context/CartContext";
 
 const links = [
   { title: "Home", path: "/" },
@@ -16,8 +17,16 @@ const authlinks = [
 ];
 
 export default function Navbar() {
+  const { cart } = useCartContext();
+  const ItemCount = cart
+    ? cart.cartItems.reduce((total, item) => total + item.product.quantity, 0)
+    : 0;
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: "primary.main" }}>
+    <AppBar
+      position="sticky"
+      color="secondary"
+      sx={{ backgroundColor: "secondary.light" }}
+    >
       <Toolbar>
         <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
           <IconButton color="inherit">
@@ -42,7 +51,7 @@ export default function Navbar() {
             size="large"
             edge="start"
           >
-            <Badge badgeContent={2} color="secondary">
+            <Badge badgeContent={ItemCount} color="secondary">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>

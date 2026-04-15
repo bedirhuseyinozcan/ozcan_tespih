@@ -38,6 +38,10 @@ async function createCart() {
 }
 
 async function addItemToCart(productId, quantity, customerId) {
+  if (!productId || productId === "undefined" || productId === "null") {
+    throw new Error("Invalid product id");
+  }
+
   const cart = await getCart(customerId);
   const item = cart.cartItems.find((item) => item.productId == productId);
 
@@ -89,16 +93,21 @@ async function replace(id, cart) {
 async function cartToDTO(cart) {
   const data = await readData();
 
-  let items = cart.cartItems.map((item) => ({
-    id: item.id,
-    product: {
-      productId: item.productId,
-      quantity: item.quantity,
-      title: data.products.find((p) => p.id === item.productId).title,
-      price: data.products.find((p) => p.id === item.productId).price,
-      image: data.products.find((p) => p.id === item.productId).image,
-    },
-  }));
+  let items = cart.cartItems.map((item) => {
+    const product = data.products.find((p) => p.id == item.productId);
+    if (!product) return null;
+    
+    return {
+      id: item.id,
+      product: {
+        productId: item.productId,
+        quantity: item.quantity,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+      },
+    };
+  }).filter(Boolean); // Filter out items with missing products
 
   cart.cartItems = items;
   return cart;
