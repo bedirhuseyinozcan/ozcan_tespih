@@ -3,6 +3,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import { NavLink } from "react-router";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useCartContext } from "../context/CartContext";
+import { useSelector } from "react-redux";
 
 const links = [
   { title: "Home", path: "/" },
@@ -17,7 +18,7 @@ const authlinks = [
 ];
 
 export default function Navbar() {
-  const { cart } = useCartContext();
+  const { cart } = useSelector((state) => state.cart);
   const ItemCount = cart
     ? cart.cartItems.reduce((total, item) => total + item.product.quantity, 0)
     : 0;

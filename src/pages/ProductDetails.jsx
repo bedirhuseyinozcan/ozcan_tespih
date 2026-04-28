@@ -4,43 +4,31 @@ import ProductItem from "../components/ProductItem";
 import Loading from "../components/Loading";
 import requests from "../api/apiClient";
 import { useCartContext } from "../context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { addItemToCart, setCart } from "./cart/cartSlice";
+import { fetchProductById, selectProductById } from "./catalog/catalogSlice";
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
-  const [loading, setLoading] = useState(true);
-  const [isAdding, setIsAdding] = useState(false);
-  const [product, setProduct] = useState(null);
-  const { cart, setCart } = useCartContext();
+  const { cart, status } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
+  const product = useSelector((state) => selectProductById(state, id));
+  const { status: loading } = useSelector((state) => state.catalog);
 
   const cartItem = cart?.cartItems.find(
     (i) => i.product.productId === product?.id,
   );
 
   function handleAddItem(productId) {
-    setIsAdding(true);
-    requests.cart
-      .addItem(productId)
-      .then((cart) => setCart(cart))
-      .catch((error) => console.log(error))
-      .finally(() => setIsAdding(false));
+    dispatch(addItemToCart({ productId: productId }));
   }
 
   useEffect(() => {
-    async function fetchProductDetails() {
-      try {
-        const data = await requests.products.details(id);
-        setProduct(data);
-      } catch (error) {
-        console.log("error");
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProductDetails();
+    if (!product && id) dispatch(fetchProductById(id));
   }, [id]);
 
-  if (loading) return <Loading message="Loading product details..." />;
+  if (loading === "pendingFetchProductById")
+    return <Loading message="Loading product details..." />;
 
   if (!product) return <h2>Ürün bulunamadı.</h2>;
   return (
@@ -48,7 +36,7 @@ export default function ProductDetailsPage() {
       product={product}
       handleAddItem={handleAddItem}
       cartItem={cartItem}
-      isAdding={isAdding}
+      isAdding={status === "pendingAddItem" + product.id}
     />
   );
 }
