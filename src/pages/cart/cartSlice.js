@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import requests from "../../api/apiClient";
+import { act } from "react";
 
 
 const initialState = {
@@ -25,6 +26,17 @@ export const deleteItemFromCart = createAsyncThunk(
       return await requests.cart.deleteItem(productId, quantity);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const getCart = createAsyncThunk(
+  "cart/getCart",
+  async (_,thunkAPI) => {
+    try {
+      return await requests.cart.get();
+    } catch (error) {
+      return thunkAPI.rejectWithValue({error : error.data});
     }
   }
 );
@@ -65,6 +77,10 @@ export const cartSlice = createSlice({
         builder.addCase(deleteItemFromCart.rejected, (state)=>{
             state.status = "idle"
         })
+         builder.addCase(getCart.fulfilled, (state ,action)=>{
+            state.cart = action.payload;
+        })
+
 
     }
 });

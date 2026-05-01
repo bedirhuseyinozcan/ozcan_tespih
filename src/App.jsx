@@ -1,19 +1,21 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
-import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/Home";
 import ProductsPage from "./pages/Products";
 import CartPage from "./pages/cart/Cart";
-import LoginPage from "./pages/Login";
-import RegisterPage from "./pages/Register";
+import LoginPage from "./pages/account/Login";
+import RegisterPage from "./pages/account/Register";
 import AboutPage from "./pages/About";
 import ProductDetailsPage from "./pages/ProductDetails";
 import ErrorPage from "./pages/errors/Error";
 import ServerErrorPage from "./pages/errors/ServerError";
 import NotFoundPage from "./pages/errors/NotFound";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import requests from "./api/apiClient";
 import { useDispatch } from "react-redux";
-import { setCart } from "./pages/cart/cartSlice";
+import { getCart, setCart } from "./pages/cart/cartSlice";
+import { setUser, logout, getUser } from "./pages/account/accountSlice";
+import MainLayout from "./layouts/MainLayout";
+import Loading from "./components/Loading";
 
 export const router = createBrowserRouter([
   {
@@ -50,12 +52,18 @@ export const router = createBrowserRouter([
 
 function App() {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+  const initApp = async () => {
+    await dispatch(getUser());
+    await dispatch(getCart());
+  };
+
   useEffect(() => {
-    requests.cart
-      .get()
-      .then((cart) => dispatch(setCart(cart)))
-      .catch((error) => console.log(error));
-  }, [dispatch]);
+    initApp().then(() => {
+      setLoading(false);
+    });
+  }, []);
+  if (loading) return <Loading message="Uygulama başlatılıyor..." />;
 
   return <RouterProvider router={router} />;
 }
